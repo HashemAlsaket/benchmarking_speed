@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func rangeSumBST(root *TreeNode, low int, high int) int {
+func rangeSumBST(root *TreeNode, low int, high int) float64 {
 	var v int = 0
 	start := time.Now()
 
@@ -24,8 +25,9 @@ func rangeSumBST(root *TreeNode, low int, high int) int {
 	}
 
 	v = rec(root, low, high, v)
-	fmt.Println(time.Since(start).Seconds() * 1000)
-	return v
+	return float64(time.Since(start).Milliseconds())
+	// fmt.Println(time.Since(start).Seconds() * 1000)
+	// return v
 }
 
 func rec(node *TreeNode, L int, R int, v int) int {
@@ -79,10 +81,19 @@ func main() {
 		return ints[i] < ints[j]
 	})
 
-	tree := toBST(ints)
-
-	for i := 0; i < 10; i++ {
-		rangeSumBST(tree, low, high)
+	var times []float64
+	iters := 100
+	sample_size := 1000
+	for i := 0; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(ints))))
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			tree := toBST(ints[:ind])
+			md += float64(rangeSumBST(tree, low, high))
+		}
+		times = append(times, md/float64(sample_size))
 	}
+	fmt.Print(times)
 
 }

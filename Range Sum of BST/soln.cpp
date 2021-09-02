@@ -34,7 +34,7 @@ public:
     };
 
 public:
-    int rangeSumBST(TreeNode* root, int low, int high) {
+    float rangeSumBST(TreeNode* root, int low, int high) {
         #include <chrono>
         auto t1 = std::chrono::high_resolution_clock::now();
         int v = 0;
@@ -42,8 +42,9 @@ public:
         v = rec(root, low, high, v);
         
         chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-        cout << "Time taken: " << fp_ms.count() << " ms, ";
-        return v;
+        // cout << "Time taken: " << fp_ms.count() << " ms, ";
+        // return v;
+        return fp_ms.count();
     }
 };
  
@@ -107,13 +108,26 @@ int main (){
         }
         
         }
-    
-    TreeNode *tree = toBST(v_split);
-
-    for (int i = 0; i < 10; i ++){
-        cout << soln.rangeSumBST(tree, low, high);
-        cout << "\n";
+    vector<float> times;
+    int sample_size = 100;
+    int iters = 101;
+    for (int i = 1; i < iters; i++){
+        float prop = float(i) / float(iters);
+        int ind = prop * v_split.size();
+        float md = 0;
+        for (int j = 0; j < sample_size; j++){
+            vector<int> mid_vec;
+            for (int k = 0; k < ind; k++){
+                mid_vec.push_back(v_split[k]);
+            }
+            TreeNode *tree = toBST(mid_vec);
+            md += soln.rangeSumBST(tree, low, high);
         }
+        times.push_back(md / sample_size);
+    }
+    for (int i = 0; i < times.size(); i++){
+        cout << times[i] << ", ";
+    }
 	}
     return 0;
 }

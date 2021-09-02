@@ -13,9 +13,10 @@ class Solution:
                 d[srt] = []
             d[srt].append(s)
         
-        print(len(strs))
-        print('{:.20f}'.format((time.time() - t0) * 1000))
-        return [d[k] for k in d]
+        # print(len(strs))
+        # print('{:.20f}'.format((time.time() - t0) * 1000))
+        # return [d[k] for k in d]
+        return (time.time() - t0) * 1000
         
         
         
@@ -23,6 +24,14 @@ with open("testcase.txt", "r") as fil:
     from ast import literal_eval
     vars = fil.readlines()
     vars = literal_eval(vars[0])
-    print(vars)
-    for i in range(10):
-        Solution().groupAnagrams(vars)
+    
+    times = []
+    iters = 100
+    sample_size = 100
+    for i in range(iters):
+        prop = (i/iters)
+        mid = 0
+        for j in range(sample_size):
+            mid += (Solution().groupAnagrams(vars[:int(prop * len(vars))]))
+        times.append(round(mid / sample_size, 2))
+    print(times)

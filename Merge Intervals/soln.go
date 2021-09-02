@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func merge(intervals [][]int) [][]int {
+func merge(intervals [][]int) float64 {
 	start := time.Now()
 
 	sort.Slice(intervals[:], func(i, j int) bool {
@@ -44,8 +45,9 @@ func merge(intervals [][]int) [][]int {
 	}
 	res = append(res, arr)
 
-	fmt.Println(time.Since(start).Seconds() * 1000)
-	return res
+	// fmt.Println(time.Since(start).Seconds() * 1000)
+	// return res
+	return float64(time.Since(start).Milliseconds())
 }
 
 func main() {
@@ -64,8 +66,20 @@ func main() {
 		vsum += (a + b)
 		ints[i] = []int{a, b}
 	}
-	for i := 0; i < 10; i++ {
-		fmt.Println(merge(ints))
+
+	var times []float64
+	iters := 101
+	sample_size := 101
+	for i := 1; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(ints))))
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			fmt.Println(len(ints[:ind]))
+			md += float64(merge(ints[:ind]))
+		}
+		times = append(times, md/float64(sample_size))
 	}
+	fmt.Print(times)
 
 }

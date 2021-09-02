@@ -13,7 +13,7 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    float groupAnagrams(vector<string>& strs) {
         #include <chrono>
         auto t1 = std::chrono::high_resolution_clock::now();
         
@@ -32,8 +32,9 @@ public:
         }
         
         chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-        cout << "Time taken: " << fp_ms.count() << " ms, ";
-        return res;
+        // cout << "Time taken: " << fp_ms.count() << " ms, ";
+        // return res;
+        return fp_ms.count();
     }
 };
 
@@ -64,11 +65,26 @@ int main (){
             res.push_back(a);
             j ++;
         }
-        cout << j;
-
-        for (int i = 0; i < 10; i ++){
-            soln.groupAnagrams(res);
-            cout << "\n";
+        
+        vector<float> times;
+        vector<string> vars = res;
+        int sample_size = 100;
+        int iters = 100;
+        for (int i = 0; i < iters; i++){
+            float prop = float(i) / float(iters);
+            int ind = prop * vars.size();
+            float md = 0;
+            for (int j = 0; j < sample_size; j++){
+                vector<string> mid_vec;
+                for (int k = 0; k < ind; k++){
+                    mid_vec.push_back(res[k]);
+                }
+                md += soln.groupAnagrams(mid_vec);
+            }
+            times.push_back(md / sample_size);
+        }
+        for (int i = 0; i < times.size(); i++){
+            cout << times[i] << ", ";
         }
 	}
     return 0;

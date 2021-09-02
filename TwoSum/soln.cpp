@@ -11,7 +11,7 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
+    float twoSum(vector<int>& nums, int target) {
         auto t1 = std::chrono::high_resolution_clock::now();
         
         std::map<int, int> m;
@@ -21,13 +21,15 @@ public:
             
             if (m.find(diff) != m.end()){
                 std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-                
-                std::cout << "Time taken: " << fp_ms.count() << " ms, ";
-                return {m[diff], i};
+                return fp_ms.count();
+                // std::cout << "Time taken: " << fp_ms.count() << " ms, ";
+                // return {m[diff], i};
             }
             m[nums[i]] = i;
         }
-        return {};
+        std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
+        return fp_ms.count();
+        // return 0.0;
     }
 };
 
@@ -55,15 +57,27 @@ int main (){
         string subs;
         getline(s_stream, subs, ','); //get first string delimited by comma
         v_split.push_back(stoi(subs));
-    }
-    cout << v_split[0];
-    cout << "\n";
-    cout << v[1];
-
-        for (int i = 0; i < 10; i ++){
-            soln.twoSum(v_split, target);
-            cout << "\n";
         }
+        
+    vector<float> times;
+    int sample_size = 1000;
+    int iters = 100;
+    for (int i = 0; i < iters; i++){
+        float prop = float(i) / float(iters);
+        int ind = prop * v_split.size();
+        float md = 0;
+        for (int j = 0; j < sample_size; j++){
+            vector<int> mid_vec;
+            for (int k = 0; k < ind; k++){
+                mid_vec.push_back(v_split[k]);
+            }
+            md += soln.twoSum(mid_vec, target);
+        }
+        times.push_back(md / sample_size);
+    }
+    for (int i = 0; i < times.size(); i++){
+        cout << times[i] << ", ";
+    }
 	}
     return 0;
 }

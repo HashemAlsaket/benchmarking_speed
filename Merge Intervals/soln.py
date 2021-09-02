@@ -17,17 +17,22 @@ class Solution:
                 res.append(arr)
                 arr = x
         res.append(arr)
-        print('{:.20f}'.format((time.time() - t0) * 1000))
-        return res
+        # print('{:.20f}'.format((time.time() - t0) * 1000))
+        # return res
+        return (time.time() - t0) * 1000
 
 with open("testcase.txt", "r") as fil:
     from ast import literal_eval
     vars = fil.readlines()
     vars = literal_eval(vars[0])
     vars = [[int(x[0]), int(x[1])] for x in vars]
-    v = 0
-    for a in vars:
-        v += sum(a)
-    print(v)
-    for i in range(10):
-        print(Solution().merge(vars))
+    times = []
+    iters = 100
+    sample_size = 100
+    for i in range(1, iters + 1):
+        prop = (i/iters)
+        mid = 0
+        for j in range(sample_size):
+            mid += Solution().merge(vars[:int(prop * len(vars))])
+        times.append(round(mid / sample_size, 2))
+    print(times)

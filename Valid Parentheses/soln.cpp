@@ -10,7 +10,7 @@ using namespace std;
 
 class Solution {
 public:
-    bool isValid(string s) {
+    float isValid(string s) {
         auto t1 = std::chrono::high_resolution_clock::now();
         stack<char> Stack;
         
@@ -39,8 +39,9 @@ public:
             }
         }
         std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-        std::cout << "Time taken: " << fp_ms.count() << " ms, ";
-        return Stack.size() == 0;
+        return fp_ms.count();
+        // std::cout << "Time taken: " << fp_ms.count() << " ms, ";
+        // return Stack.size() == 0;
     }
 };
 
@@ -60,10 +61,21 @@ int main (){
 				v.push_back(line);
 			}
 		}
-
-        string i1 = v[0];
-        for (int i = 0; i < 10; i ++){
-            cout << soln.isValid(i1) << "\n";
+        vector<float> times;
+        string vars = v[0];
+        int sample_size = 1000;
+        int iters = 100;
+        for (int i = 0; i < iters; i++){
+            float prop = float(i) / float(iters);
+            int ind = prop * vars.size();
+            float md = 0;
+            for (int j = 0; j < sample_size; j++){
+                md += soln.isValid(vars.substr(0, ind));
+            }
+            times.push_back(md / sample_size);
+        }
+        for (int i = 0; i < times.size(); i++){
+            cout << times[i] << ", ";
         }
 	}
     return 0;

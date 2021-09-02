@@ -23,8 +23,9 @@ class Solution:
                 rec(root.right)
         
         rec(root)
-        print('{:.20f}'.format((time.time() - t0) * 1000))
-        print(self.v)
+        # print('{:.20f}'.format((time.time() - t0) * 1000))
+        # print(self.v)
+        return (time.time() - t0) * 1000
         return self.v
 
 def toBST(arr):
@@ -43,5 +44,13 @@ with open("testcase.txt", "r") as fil:
     vars[0] = vars[0][1:-1].split(',')
     vars[0] = [int(x) if x != 'null' else 0 for x in vars[0]]
     vars[1], vars[2] = int(vars[1]), int(vars[2])
-    for i in range(10):
-        Solution().rangeSumBST(toBST(vars[0]), vars[1], vars[2])
+    times = []
+    iters = 100
+    sample_size = 100
+    for i in range(1, iters + 1):
+        prop = (i/iters)
+        mid = 0
+        for j in range(sample_size):
+            mid += (Solution().rangeSumBST(toBST(vars[0][:int(prop * len(vars[0]))]), vars[1], vars[2]))
+        times.append(round(mid / sample_size, 2))
+    print(times)

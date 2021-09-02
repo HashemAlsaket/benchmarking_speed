@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"io/ioutil"
+	"math"
 	"time"
 )
 
-func isValid(s string) bool {
+func isValid(s string) float64 {
 	start := time.Now()
 
 	var stack []string
@@ -19,39 +19,46 @@ func isValid(s string) bool {
 			continue
 		}
 		if len(stack) == 0 {
-			return false
+			return 0
 		}
 		p := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
 
 		if l == ")" && p != "(" {
-			return false
+			return 0
 		}
 		if l == "]" && p != "[" {
-			return false
+			return 0
 		}
 		if l == "}" && p != "{" {
-			return false
+			return 0
 		}
 	}
-	fmt.Println(time.Since(start).Seconds()*1000, " ms")
-	return len(stack) == 0
+	return float64(time.Since(start).Milliseconds())
+	// fmt.Println(time.Since(start).Seconds()*1000, " ms")
+	// return len(stack) == 0
 }
 
 func main() {
-	vars := []string{}
-	file, err := os.Open("testcase.txt")
+	file, err := ioutil.ReadFile("testcase.txt")
 	if err != nil {
-		defer file.Close()
-	}
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		vars = append(vars, scanner.Text())
-	}
-	v1 := vars[0]
-	for i := 0; i < 10; i++ {
-		isValid(v1)
+		fmt.Print(err)
 	}
 
+	vars := string(file)
+
+	var times []float64
+	iters := 100
+	sample_size := 1000
+	for i := 0; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(vars))))
+		// fmt.Print("ind : ", prop, ind)
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			md += isValid(string(vars[:ind]))
+		}
+		times = append(times, md/float64(sample_size))
+	}
+	fmt.Print(times)
 }

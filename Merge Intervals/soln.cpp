@@ -12,7 +12,7 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+    float merge(vector<vector<int>>& intervals) {
         auto t1 = std::chrono::high_resolution_clock::now();
         
         sort(intervals.begin(), intervals.end());
@@ -33,11 +33,12 @@ public:
         res.push_back(arr);
         
         std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-        std::cout << "Time taken: " << fp_ms.count() << " ms, ";
-        for (int i = 0; i < res.size(); i++){
-            cout << '[' << res[i][0] << ',' << res[i][1] << ']' << ',';
-        }
-        return res;
+        // std::cout << "Time taken: " << fp_ms.count() << " ms, ";
+        // for (int i = 0; i < res.size(); i++){
+        //     cout << '[' << res[i][0] << ',' << res[i][1] << ']' << ',';
+        // }
+        // return res;
+        return fp_ms.count();
     }
 };
 
@@ -88,10 +89,25 @@ int main (){
             res2.push_back({res[i], res[i + 1]});
         }
 
-        for (int i = 0; i < 10; i ++){
-            soln.merge(res2);
-            cout << "\n";
+    vector<float> times;
+    int sample_size = 100;
+    int iters = 101;
+    for (int i = 1; i < iters; i++){
+        float prop = float(i) / float(iters);
+        int ind = prop * res2.size();
+        float md = 0;
+        for (int j = 0; j < sample_size; j++){
+            vector<vector<int>> mid_vec;
+            for (int k = 0; k < ind; k++){
+                mid_vec.push_back(res2[k]);
+            }
+            md += soln.merge(mid_vec);
         }
+        times.push_back(md / sample_size);
+    }
+    for (int i = 0; i < times.size(); i++){
+        cout << times[i] << ", ";
+    }
 	}
     return 0;
 }

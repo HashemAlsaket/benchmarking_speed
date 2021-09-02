@@ -3,26 +3,29 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func twoSum(nums []int, target int) []int {
+func twoSum(nums []int, target int) float64 {
 	start := time.Now()
 
 	m := make(map[int]int)
 
 	for i := 0; i < len(nums); i++ {
 		diff := target - nums[i]
-		if val, ok := m[diff]; ok {
-			fmt.Println(time.Since(start).Seconds() * 1000)
-			return []int{val, i}
+		if _, ok := m[diff]; ok {
+			return float64(time.Since(start).Milliseconds())
+			// fmt.Println(time.Since(start).Seconds() * 1000)
+			// return []int{val, i}
 		}
 		m[nums[i]] = i
 	}
-	return []int{0, 0} // need return for golang
+	return float64(time.Since(start).Milliseconds())
+	// return []int{0, 0} // need return for golang
 }
 
 func main() {
@@ -44,9 +47,18 @@ func main() {
 
 	scanner.Scan()
 	target, _ := strconv.Atoi(scanner.Text())
-
-	for i := 0; i < 10; i++ {
-		fmt.Println(twoSum(ints, target))
+	var times []float64
+	iters := 100
+	sample_size := 1000
+	for i := 0; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(ints))))
+		// fmt.Print("ind : ", prop, ind)
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			md += float64(twoSum(ints[:ind], target))
+		}
+		times = append(times, md/float64(sample_size))
 	}
-
+	fmt.Print(times)
 }

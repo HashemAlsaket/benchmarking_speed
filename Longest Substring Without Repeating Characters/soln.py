@@ -23,12 +23,21 @@ class Solution:
             j += 1
             
         mx = max(mx, j - i)
-        print(len(s))
-        print('{:.20f}'.format((time.time() - t0) * 1000))
-        return mx
+        # print('{:.20f}'.format((time.time() - t0) * 1000))
+        # return mx
+        return (time.time() - t0) * 1000
 
 with open("testcase.txt", "r") as fil:
     vars = fil.readlines()
     vars = [var.rstrip() for var in vars]
-    for i in range(10):
-        Solution().lengthOfLongestSubstring(vars[0][1:-1])
+    inp = vars[0]
+    times = []
+    iters = 100
+    sample_size = 1000
+    for i in range(iters):
+        prop = (i/iters)
+        mid = 0
+        for j in range(sample_size):
+            mid += (Solution().lengthOfLongestSubstring(inp[1:int(prop * len(inp))]))
+        times.append(round(mid / sample_size, 2))
+    print(times)

@@ -12,7 +12,7 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
+    float lengthOfLongestSubstring(string s) {
         #include <chrono>
         auto t1 = std::chrono::high_resolution_clock::now();
         
@@ -41,8 +41,9 @@ public:
         mx = max(mx, j - i);
         
         std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - t1;
-        std::cout << "Time taken: " << fp_ms.count() << " ms, ";
-        return mx;
+        // std::cout << "Time taken: " << fp_ms.count() << " ms, ";
+        // return mx;
+        return fp_ms.count();
     }
 };
 
@@ -63,10 +64,21 @@ int main (){
 			}
 		}
 
-        string i1 = v[0];
-        cout << i1.size() - 2;
-        for (int i = 0; i < 10; i ++){
-            cout << soln.lengthOfLongestSubstring(i1.substr(1, i1.size() - 1)) << "\n";
+        vector<float> times;
+        string vars = v[0];
+        int sample_size = 100;
+        int iters = 100;
+        for (int i = 0; i < iters; i++){
+            float prop = float(i) / float(iters);
+            int ind = prop * vars.size();
+            float md = 0;
+            for (int j = 0; j < sample_size; j++){
+                md += soln.lengthOfLongestSubstring(vars.substr(1, ind));
+            }
+            times.push_back(md / sample_size);
+        }
+        for (int i = 0; i < times.size(); i++){
+            cout << times[i] << ", ";
         }
 	}
     return 0;

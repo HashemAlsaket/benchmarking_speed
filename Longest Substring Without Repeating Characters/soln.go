@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"time"
 )
 
-func lengthOfLongestSubstring(s string) int {
+func lengthOfLongestSubstring(s string) float64 {
 	start := time.Now()
 
 	n := len(s)
@@ -31,13 +32,12 @@ func lengthOfLongestSubstring(s string) int {
 		m[string(s[j])] = m[string(s[j])] + 1
 		j = j + 1
 	}
-	if mx > j-i {
-		mx = mx
-	} else {
+	if mx < j-i {
 		mx = j - i
 	}
-	fmt.Println(time.Since(start).Seconds() * 1000)
-	return mx
+	// fmt.Println(time.Since(start).Seconds() * 1000)
+	// return mx
+	return float64(time.Since(start).Milliseconds())
 }
 func main() {
 	vars := []string{}
@@ -51,9 +51,18 @@ func main() {
 		vars = append(vars, scanner.Text())
 	}
 	v1 := vars[0]
-	fmt.Println((len(vars[0]) - 2))
-	for i := 0; i < 10; i++ {
-		lengthOfLongestSubstring(v1[1 : len(v1)-1])
+	var times []float64
+	iters := 101
+	sample_size := 101
+	for i := 1; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(v1))))
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			md += lengthOfLongestSubstring(string(v1[:ind]))
+		}
+		times = append(times, md/float64(sample_size))
 	}
+	fmt.Print(times)
 
 }

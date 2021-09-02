@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"sort"
 	"strings"
 	"time"
 )
 
-func groupAnagrams(strs []string) [][]string {
+func groupAnagrams(strs []string) float64 {
 	start := time.Now()
 
 	m := make(map[string][]string)
@@ -27,8 +28,9 @@ func groupAnagrams(strs []string) [][]string {
 		res = append(res, m[key])
 	}
 
-	fmt.Println(time.Since(start).Seconds() * 1000)
-	return res
+	// fmt.Println(time.Since(start).Seconds() * 1000)
+	// return res
+	return float64(time.Since(start).Milliseconds())
 }
 
 func sorted(str string) string {
@@ -50,9 +52,20 @@ func main() {
 		strs[i] = s[1 : len(s)-1]
 		vsum += 1
 	}
-	for i := 0; i < 10; i++ {
-		groupAnagrams(strs)
-		fmt.Println(vsum)
+
+	var times []float64
+	iters := 100
+	sample_size := 100
+	for i := 0; i < iters; i++ {
+		prop := float64(i) / float64(iters)
+		ind := int(math.Round(prop * float64(len(strs))))
+		// fmt.Print("ind : ", prop, ind)
+		md := 0.0
+		for j := 0; j < sample_size; j++ {
+			md += float64(groupAnagrams(strs[:ind]))
+		}
+		times = append(times, md/float64(sample_size))
 	}
+	fmt.Print(times)
 
 }
