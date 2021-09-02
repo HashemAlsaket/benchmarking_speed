@@ -12,10 +12,17 @@ using namespace std;
 
 class Solution {
 public:
+    static bool cmprt(vector<int>& a, vector<int>& b)
+    {
+        if(a[0] == b[0]){
+            return a[1] > b[1];
+        }
+        return a[0] < b[0];
+    }
     float merge(vector<vector<int>>& intervals) {
         auto t1 = std::chrono::high_resolution_clock::now();
         
-        sort(intervals.begin(), intervals.end());
+        sort(intervals.begin(), intervals.end(), cmprt);
         
         vector<vector<int>> res;
         
